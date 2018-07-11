@@ -1,3 +1,7 @@
+// Some notes:
+// This was build with the operator-sdk, however does not use a CRD.
+// https://github.com/operator-framework/operator-sdk/issues/326
+
 package main
 
 import (
@@ -6,7 +10,6 @@ import (
 
 	stub "github.com/neilpeterson/azure-fqdn-operator/pkg/stub"
 	sdk "github.com/operator-framework/operator-sdk/pkg/sdk"
-	k8sutil "github.com/operator-framework/operator-sdk/pkg/util/k8sutil"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
 
 	"github.com/sirupsen/logrus"
@@ -23,15 +26,8 @@ func main() {
 
 	sdk.ExposeMetricsPort()
 
-	resource := "azure-fqdn.example.com/v1alpha1"
-	kind := "App"
-	namespace, err := k8sutil.GetWatchNamespace()
-	if err != nil {
-		logrus.Fatalf("Failed to get watch namespace: %v", err)
-	}
-	resyncPeriod := 5
-	logrus.Infof("Watching %s, %s, %s, %d", resource, kind, namespace, resyncPeriod)
-	sdk.Watch(resource, kind, namespace, resyncPeriod)
+	// Can I remove the resync (0) and instead create a watch on service resources?
+	sdk.Watch("v1", "Service", "default", 5)
 	sdk.Handle(stub.NewHandler())
 	sdk.Run(context.TODO())
 }

@@ -2,67 +2,41 @@ package stub
 
 import (
 	"context"
-
-	"github.com/neilpeterson/azure-fqdn-operator/pkg/apis/azure-fqdn/v1alpha1"
+	"fmt"
 
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
-	"github.com/sirupsen/logrus"
-	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/api/core/v1"
 )
 
+// NewHandler function
 func NewHandler() sdk.Handler {
 	return &Handler{}
 }
 
+// Handler struct
 type Handler struct {
-	// Fill me
 }
 
+// Handle function - reacts to listener
 func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 	switch o := event.Object.(type) {
-	case *v1alpha1.App:
-		err := sdk.Create(newbusyBoxPod(o))
-		if err != nil && !errors.IsAlreadyExists(err) {
-			logrus.Errorf("Failed to create busybox pod : %v", err)
-			return err
+	case *v1.Service:
+
+		if event.Deleted {
+			fmt.Printf("Service Deleted - do nothing yet")
+		} else {
+			s := o
+
+			// Get annotation
+			annotations := s.Annotations
+
+			// If annotation is present, watch service for PIP
+			if _, ok := annotations["azure-fqdn-kill"]; !ok {
+				if _, ok := annotations["azure-fqdn-value"]; ok {
+					readyService(s)
+				}
+			}
 		}
 	}
 	return nil
-}
-
-// newbusyBoxPod demonstrates how to create a busybox pod
-func newbusyBoxPod(cr *v1alpha1.App) *corev1.Pod {
-	labels := map[string]string{
-		"app": "busy-box",
-	}
-	return &corev1.Pod{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "Pod",
-			APIVersion: "v1",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      "busy-box",
-			Namespace: cr.Namespace,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(cr, schema.GroupVersionKind{
-					Group:   v1alpha1.SchemeGroupVersion.Group,
-					Version: v1alpha1.SchemeGroupVersion.Version,
-					Kind:    "App",
-				}),
-			},
-			Labels: labels,
-		},
-		Spec: corev1.PodSpec{
-			Containers: []corev1.Container{
-				{
-					Name:    "busybox",
-					Image:   "busybox",
-					Command: []string{"sleep", "3600"},
-				},
-			},
-		},
-	}
 }

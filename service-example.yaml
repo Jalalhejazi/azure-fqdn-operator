@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-annotation-is-lb
+  annotations: {
+    "azure-fqdn-value": "demo-app-007",
+    "azure-fqdn-rg": "MC_billBooth_billBooth_eastus",
+    "azure-fqdn-location": "eastus"
+  }
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
