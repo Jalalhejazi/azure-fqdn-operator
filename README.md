@@ -70,7 +70,7 @@ spec:
               value: "azure-fqdn-operator"
 ```
 
-The Azure Go client is then used to update the associated public ip address with an FQDN.
+Create a service with the following annotations.
 
 | value | description |
 |---|---|
@@ -78,7 +78,7 @@ The Azure Go client is then used to update the associated public ip address with
 | azure-fqdn-rg | AKS node resource group (MC_..) |
 | azure-fqdn-location | Resource group location |
 
-Example manifest:
+Example:
 
 ```yaml
 apiVersion: v1
@@ -95,3 +95,5 @@ spec:
   ports:
   - port: 80
 ```
+
+Once run, the Azure Public IP Address assigned to the service will be updated with a DNS name.
