@@ -1,10 +1,24 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-annotation-is-lb
+  name: service-annotation-is-lb-5
   annotations: {
-    "azure-fqdn-value": "demo-app-007",
-    "azure-fqdn-rg": "MC_billBooth_billBooth_eastus",
+    "azure-fqdn-value": "demo-app-030",
+    "azure-fqdn-rg": "MC_scottyCarbone_scottyCarbone_eastus",
+    "azure-fqdn-location": "eastus"
+  }
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-annotation-is-lb-6
+  annotations: {
+    "azure-fqdn-value": "demo-app-035",
+    "azure-fqdn-rg": "MC_scottyCarbone_scottyCarbone_eastus",
     "azure-fqdn-location": "eastus"
   }
 spec:

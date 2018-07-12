@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-fqdn-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: azure-fqdn-operator
+  template:
+    metadata:
+      labels:
+        name: azure-fqdn-operator
+    spec:
+      containers:
+        - name: azure-fqdn-operator
+          image: neilpeterson/azure-fqdn-operator:v1
+          ports:
+          - containerPort: 60000
+            name: metrics
+          command:
+          - azure-fqdn-operator
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: AZURE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azure
+                  key: AZURE_CLIENT_ID
+            - name: AZURE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: azure
+                  key: AZURE_CLIENT_SECRET
+            - name: AZURE_TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azure
+                  key: AZURE_TENANT_ID
+            - name: AZURE_SUBSCRIPTION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azure
+                  key: AZURE_SUBSCRIPTION_ID
+            - name: OPERATOR_NAME
+              value: "azure-fqdn-operator"

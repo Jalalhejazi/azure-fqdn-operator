@@ -1,5 +1,7 @@
 FROM alpine:3.6
 
+RUN apk update && apk add ca-certificates
+
 RUN adduser -D azure-fqdn-operator
 USER azure-fqdn-operator
 

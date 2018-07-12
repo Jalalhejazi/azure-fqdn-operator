@@ -2,9 +2,9 @@ package stub
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
+	"github.com/sirupsen/logrus"
 	"k8s.io/api/core/v1"
 )
 
@@ -23,17 +23,16 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 	case *v1.Service:
 
 		if event.Deleted {
-			fmt.Printf("Service Deleted - do nothing yet")
+			// Do nothing (oppourtunity)
 		} else {
-			s := o
-
 			// Get annotation
-			annotations := s.Annotations
+			annotations := o.Annotations
 
 			// If annotation is present, watch service for PIP
 			if _, ok := annotations["azure-fqdn-kill"]; !ok {
 				if _, ok := annotations["azure-fqdn-value"]; ok {
-					readyService(s)
+					logrus.Info("Service pending IP: " + o.Name)
+					readyService(o)
 				}
 			}
 		}

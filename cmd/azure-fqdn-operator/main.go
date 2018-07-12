@@ -26,8 +26,7 @@ func main() {
 
 	sdk.ExposeMetricsPort()
 
-	// Can I remove the resync (0) and instead create a watch on service resources?
-	sdk.Watch("v1", "Service", "default", 5)
+	sdk.Watch("v1", "Service", "default", 10)
 	sdk.Handle(stub.NewHandler())
 	sdk.Run(context.TODO())
 }

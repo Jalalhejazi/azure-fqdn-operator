@@ -1,4 +1,0 @@
-apiVersion: "azure-fqdn.example.com/v1alpha1"
-kind: "App"
-metadata:
-  name: "example"
