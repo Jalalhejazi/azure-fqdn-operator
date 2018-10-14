@@ -1,4 +1,4 @@
-# POC Operator: Create AZUR FQDN on service creation
+# POC Operator - Create AZUR FQDN on service creation
 
 Create a secret with an Azure service principal client credentials, tenant id, and subscription id.
 
